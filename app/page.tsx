@@ -37,9 +37,15 @@ export default function Home() {
     setInventory(inventoryList);
   };
 
-  useEffect(() => {
-    console.log(itemName);
-  }, [itemName]);
+  const handleAddItem = async (item: any) => {
+    addItem(item);
+    setItemName("");
+    setOpen(false);
+    updateInventory();
+  };
+  const handleRemoveItem = async (result: any) => {
+    updateInventory();
+  };
 
   return (
     <>
@@ -50,7 +56,7 @@ export default function Home() {
         alignItems="center"
         gap={2}
       >
-        {BasicTable(Inventory)}
+        <BasicTable list={Inventory} onRemoveItem={handleRemoveItem} />
       </Box>
 
       <Box gap={4}>
@@ -80,8 +86,7 @@ export default function Home() {
           <Button
             variant="outlined"
             onClick={() => {
-              addItem(itemName);
-              setItemName("");
+              handleAddItem(itemName);
             }}
           >
             Add

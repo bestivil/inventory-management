@@ -10,7 +10,18 @@ import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { removeItem } from "../backend/firestorefunctions";
 
-export default function BasicTable(list: any) {
+export default function BasicTable({
+  list,
+  onRemoveItem,
+}: {
+  list: any;
+  onRemoveItem: (result: any) => void;
+}) {
+  const handleRemove = async (name: string) => {
+    const result = await removeItem(name);
+    onRemoveItem(result);
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 300 }} aria-label="table">
@@ -37,7 +48,7 @@ export default function BasicTable(list: any) {
               <TableCell align="right">{count}</TableCell>
               <TableCell
                 align="right"
-                onClick={() => removeItem(name)}
+                onClick={() => handleRemove(name)}
                 sx={{ cursor: "pointer" }}
               >
                 <DeleteIcon
