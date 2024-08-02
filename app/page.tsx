@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import BasicTable from "./components/table";
 import { firestore } from "../firebase";
 import { useState } from "react";
@@ -14,6 +14,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { useEffect } from "react";
+import { addItem } from "./backend/firestorefunctions";
 
 export default function Home() {
   const [Inventory, setInventory] = useState([]);
@@ -24,13 +25,10 @@ export default function Home() {
     updateInventory();
   }, []);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, "inventory"));
     const docs = await getDocs(snapshot);
-    const inventoryList: any = []; // TODO: amend any
+    const inventoryList: any = [];
 
     docs.forEach((doc) => {
       inventoryList.push({ name: doc.id, ...doc.data() });
@@ -39,47 +37,57 @@ export default function Home() {
     setInventory(inventoryList);
   };
 
-  const removeItem = async (item: string) => {
-    const docRef = doc(collection(firestore, "inventory"), item); //finds the object reference for item in collection
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      const { count } = docSnap.data();
-      if (count === 1) {
-        await deleteDoc(docRef);
-      } else {
-        await setDoc(docRef, { count: count - 1 });
-      }
-    }
-  };
-
-  const addItem = async (item: string) => {
-    const docRef = doc(collection(firestore, "inventory"), item); //finds the object reference for item in collection
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      const { count } = docSnap.data();
-      await setDoc(docRef, { count: count + 1 }); // if our item is in inventory, we add one to item count
-    } else {
-      await setDoc(docRef, { count: 1 });
-    }
-  };
+  useEffect(() => {
+    console.log(itemName);
+  }, [itemName]);
 
   return (
     <>
       <Box
-        height="50vh"
+        height="25vh"
         display="flex"
         justifyContent="center"
         alignItems="center"
         gap={2}
       >
-        {BasicTable(["apples", "oranges"])}
+        {BasicTable(Inventory)}
       </Box>
-      <Typography> Add item</Typography>
-      <Stack width="100%" direction="row">
-        <TextField></TextField>
-      </Stack>
+
+      <Box gap={4}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setOpen(!open);
+          }}
+        >
+          Add New Item
+        </Button>
+
+        <Stack
+          width="100%"
+          direction="row"
+          border="2px solid #FFF"
+          gap={4}
+          sx={{ display: open ? "block" : "none" }}
+        >
+          <TextField
+            variant="outlined"
+            value={itemName}
+            onChange={(e) => {
+              setItemName(e.target.value);
+            }}
+          ></TextField>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              addItem(itemName);
+              setItemName("");
+            }}
+          >
+            Add
+          </Button>
+        </Stack>
+      </Box>
     </>
   );
 }

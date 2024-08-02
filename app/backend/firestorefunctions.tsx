@@ -1,18 +1,39 @@
 import { useEffect } from "react";
 import { firestore } from "../../firebase";
-import { collection, getDocs, query } from "firebase/firestore";
 import { useState } from "react";
 
-const [Inventory, setInventory] = useState([] as string[]);
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+} from "firebase/firestore";
 
-export const updateInventory = async () => {
-  const snapshot = query(collection(firestore, "inventory"));
-  const docs = await getDocs(snapshot);
-  const inventoryList: any = []; // TODO: amend any
+export const removeItem = async (item: string) => {
+  const docRef = doc(collection(firestore, "inventory"), item); //finds the object reference for item in collection
+  const docSnap = await getDoc(docRef);
 
-  docs.forEach((doc) => {
-    inventoryList.push({ name: doc.id, ...doc.data() });
-  });
+  if (docSnap.exists()) {
+    const { count } = docSnap.data();
+    if (count === 1) {
+      await deleteDoc(docRef);
+    } else {
+      await setDoc(docRef, { count: count - 1 });
+    }
+  }
+};
 
-  setInventory(inventoryList);
+export const addItem = async (item: string) => {
+  const docRef = doc(collection(firestore, "inventory"), item); //finds the object reference for item in collection
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const { count } = docSnap.data();
+    await setDoc(docRef, { count: count + 1 }); // if our item is in inventory, we add one to item count
+  } else {
+    await setDoc(docRef, { count: 1 });
+  }
 };
