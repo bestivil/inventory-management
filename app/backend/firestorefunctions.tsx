@@ -1,6 +1,5 @@
-import { useEffect } from "react";
-import { firestore } from "../../firebase";
-import { useState } from "react";
+import { firestore, storage } from "../../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import {
   collection,
@@ -54,14 +53,18 @@ export const updateItem = async (item: string, type: "up" | "down") => {
   }
 };
 
-export const addImageItem = async (image: any) => {
-  const docRef = doc(collection(firestore, "inventory"), image); //finds the object reference for item in collection
-  const docSnap = await getDoc(docRef);
+export const addImageItem = async (image: File) => {
+  const storageRef = ref(storage, `${image.name}`);
+  const snapshot = await uploadBytes(storageRef, image);
+  const downloadURL = await getDownloadURL(snapshot.ref);
+  const docRef = doc(collection(firestore, "inventory-images"));
 
-  if (docSnap.exists()) {
-    const { count } = docSnap.data();
-    await setDoc(docRef, { count: count + 1 }); // if our item is in inventory, we add one to item count
-  } else {
-    await setDoc(docRef, { count: 1 });
+  try {
+    await setDoc(docRef, {
+      imageUrl: downloadURL,
+      imageName: image.name,
+    });
+  } catch {
+    throw new Error("Image not uploaded");
   }
 };

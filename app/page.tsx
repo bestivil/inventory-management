@@ -22,7 +22,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { useEffect } from "react";
-import { addItem } from "./backend/firestorefunctions";
+import { addImageItem, addItem } from "./backend/firestorefunctions";
 import { errorMessages } from "./components/camera";
 import { Camera, CameraType } from "react-camera-pro";
 import { OpenAI } from "openai";
@@ -64,8 +64,7 @@ export default function Home() {
 
   useEffect(() => {
     if (image) {
-      const res = aiRecongition(image);
-      // setopenaiRes(res);
+      addImageItem(image);
     }
   }, [image]);
 
