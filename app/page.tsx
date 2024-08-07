@@ -23,15 +23,25 @@ import {
 } from "firebase/firestore";
 import { useEffect } from "react";
 import { addItem } from "./backend/firestorefunctions";
-import FreeSoloCreateOption from "./components/searchbox";
-import CameraComponent, { errorMessages } from "./components/camera";
+import { errorMessages } from "./components/camera";
 import { Camera, CameraType } from "react-camera-pro";
+import { OpenAI } from "openai";
+
+import * as dotenv from "dotenv";
+import { aiRecongition } from "./backend/openai";
+dotenv.config();
+
+const openai = new OpenAI({
+  apiKey: process.env.NEXT_PUBLIC_API_KEY,
+  dangerouslyAllowBrowser: true,
+});
 
 export default function Home() {
   const [Inventory, setInventory] = useState([]);
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState(" ");
   const [modalOpen, setModalOpen] = useState(false);
+  const [openaiRes, setopenaiRes] = useState<string>();
 
   const camera = useRef<CameraType>(null);
   const [image, setImage] = useState<any>(null);
@@ -52,6 +62,13 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    if (image) {
+      const res = aiRecongition(image);
+      // setopenaiRes(res);
+    }
+  }, [image]);
+
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, "inventory"));
     const docs = await getDocs(snapshot);
@@ -60,7 +77,7 @@ export default function Home() {
     docs.forEach((doc) => {
       inventoryList.push({ name: doc.id, ...doc.data() });
     });
-    console.log(Inventory);
+
     setInventory(inventoryList);
   };
 
@@ -115,7 +132,7 @@ export default function Home() {
         </Dialog>
       </div>
 
-      <Typography sx={{ textAlign: "center" }} variant="h3">
+      <Typography sx={{ textAlign: "center", paddingTop: "32px" }} variant="h3">
         Inventory Management
       </Typography>
       <Box sx={{ marginY: "50px" }}>

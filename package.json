@@ -14,9 +14,11 @@
     "@mui/icons-material": "^5.16.6",
     "@mui/material": "^5.16.5",
     "@mui/x-data-grid": "^7.11.1",
+    "dotenv": "^16.4.5",
     "firebase": "^10.12.4",
     "mui": "^0.0.1",
     "next": "14.2.5",
+    "openai": "^4.55.0",
     "react": "^18",
     "react-camera-pro": "^1.4.0",
     "react-dom": "^18"

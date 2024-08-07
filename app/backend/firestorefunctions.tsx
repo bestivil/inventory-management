@@ -53,3 +53,15 @@ export const updateItem = async (item: string, type: "up" | "down") => {
     }
   }
 };
+
+export const addImageItem = async (image: any) => {
+  const docRef = doc(collection(firestore, "inventory"), image); //finds the object reference for item in collection
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const { count } = docSnap.data();
+    await setDoc(docRef, { count: count + 1 }); // if our item is in inventory, we add one to item count
+  } else {
+    await setDoc(docRef, { count: 1 });
+  }
+};
