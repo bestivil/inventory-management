@@ -20,7 +20,7 @@ import { Camera, CameraType } from "react-camera-pro";
 import { OpenAI } from "openai";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { AddCircle } from "@mui/icons-material";
+import { AddCircle, Search } from "@mui/icons-material";
 
 export default function Home() {
   const [Inventory, setInventory] = useState([]);
@@ -146,6 +146,15 @@ export default function Home() {
           onClick={() => setModalOpen(true)}
         >
           Add Image
+        </Button>
+
+        <Button
+          variant="contained"
+          startIcon={<Search />}
+          onClick={() => setModalOpen(true)}
+          sx={{ marginLeft: "32px" }}
+        >
+          Search
         </Button>
       </Box>
 
