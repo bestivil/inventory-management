@@ -1,15 +1,9 @@
 import { firestore, storage } from "../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-} from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+
+import { v4 } from "uuid";
 
 export const removeItem = async (item: string) => {
   const docRef = doc(collection(firestore, "inventory"), item); //finds the object reference for item in collection
@@ -54,17 +48,21 @@ export const updateItem = async (item: string, type: "up" | "down") => {
 };
 
 export const addImageItem = async (image: File) => {
-  const storageRef = ref(storage, `${image.name}`);
-  const snapshot = await uploadBytes(storageRef, image);
+  const uniqueid = v4();
+
+  const storageRef = ref(storage, `${uniqueid}`);
+  const snapshot = await uploadBytes(storageRef, image, {
+    contentType: "image/jpeg",
+  });
   const downloadURL = await getDownloadURL(snapshot.ref);
   const docRef = doc(collection(firestore, "inventory-images"));
 
   try {
     await setDoc(docRef, {
       imageUrl: downloadURL,
-      imageName: image.name,
+      imageID: uniqueid,
     });
   } catch {
-    throw new Error("Image not uploaded");
+    throw new Error("Failed");
   }
 };

@@ -4,44 +4,29 @@ import {
   Box,
   Button,
   Dialog,
-  Modal,
   Stack,
   TextField,
   Typography,
+  IconButton,
 } from "@mui/material";
 import BasicTable from "./components/table";
 import { firestore } from "../firebase";
 import { useState, useRef } from "react";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-} from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { useEffect } from "react";
 import { addImageItem, addItem } from "./backend/firestorefunctions";
 import { errorMessages } from "./components/camera";
 import { Camera, CameraType } from "react-camera-pro";
 import { OpenAI } from "openai";
-
-import * as dotenv from "dotenv";
-import { aiRecongition } from "./backend/openai";
-dotenv.config();
-
-const openai = new OpenAI({
-  apiKey: process.env.NEXT_PUBLIC_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { AddCircle } from "@mui/icons-material";
 
 export default function Home() {
   const [Inventory, setInventory] = useState([]);
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState(" ");
   const [modalOpen, setModalOpen] = useState(false);
-  const [openaiRes, setopenaiRes] = useState<string>();
 
   const camera = useRef<CameraType>(null);
   const [image, setImage] = useState<any>(null);
@@ -134,55 +119,61 @@ export default function Home() {
       <Typography sx={{ textAlign: "center", paddingTop: "32px" }} variant="h3">
         Inventory Management
       </Typography>
-      <Box sx={{ marginY: "50px" }}>
-        <BasicTable list={Inventory} onRemoveItem={handleRemoveItem} />
-      </Box>
-
       <Box
-        gap={4}
         sx={{
-          marginBottom: "60px",
-          alignItems: "center",
-          justifyContent: "center",
+          textAlign: "center",
+          paddingTop: "32px",
         }}
       >
         <Button
           variant="contained"
+          startIcon={<AddCircle />}
           onClick={() => {
             setOpen(!open);
           }}
-          sx={{ justifyItems: "center", alignContent: "center" }}
+          sx={{
+            justifyItems: "center",
+            alignContent: "center",
+            marginRight: "32px",
+          }}
         >
-          Add New Item
+          Add Item
         </Button>
 
-        <Button onClick={() => setModalOpen(true)}>Open Modal</Button>
-
-        <Stack
-          width="100%"
-          direction="row"
-          border="2px solid #FFF"
-          gap={4}
-          sx={{ display: open ? "block" : "none" }}
+        <Button
+          variant="contained"
+          startIcon={<AddAPhotoIcon />}
+          onClick={() => setModalOpen(true)}
         >
-          <TextField
-            variant="outlined"
-            sx={{ borderColor: "#FFFFFF" }}
-            value={itemName}
-            onChange={(e) => {
-              setItemName(e.target.value);
-            }}
-          ></TextField>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              handleAddItem(itemName);
-            }}
-          >
-            Add
-          </Button>
-        </Stack>
-        <div></div>
+          Add Image
+        </Button>
+      </Box>
+
+      <Stack
+        width="100%"
+        direction="row"
+        border="2px solid #FFF"
+        gap={4}
+        sx={{ display: open ? "block" : "none" }}
+      >
+        <TextField
+          sx={{ borderColor: "#FFFFFF" }}
+          value={itemName}
+          onChange={(e) => {
+            setItemName(e.target.value);
+          }}
+        ></TextField>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            handleAddItem(itemName);
+          }}
+        >
+          Add
+        </Button>
+      </Stack>
+      <Box sx={{ marginY: "50px" }}>
+        <BasicTable list={Inventory} onRemoveItem={handleRemoveItem} />
       </Box>
     </>
   );

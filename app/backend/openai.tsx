@@ -7,18 +7,22 @@ const openai = new OpenAI({
 });
 
 export async function aiRecongition(image: any) {
-  const res = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "text", text: "Describe the image in one word" },
-          { type: "image_url", image_url: { url: image, detail: "low" } },
-        ],
-      },
-    ],
-  });
-  console.log(res.choices[0]);
-  return res.choices[0];
+  try {
+    const res = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: "Describe the image in one word" },
+            { type: "image_url", image_url: { url: image, detail: "low" } },
+          ],
+        },
+      ],
+    });
+    console.log(res.choices[0]);
+    return res.choices[0];
+  } catch {
+    throw new Error("Unable to upload image to GPT Vision");
+  }
 }
