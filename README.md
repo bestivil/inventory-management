@@ -1,16 +1,15 @@
 # Inventory Management
 
-## Technologies Used
 
-### Front-end:
+### Frontend:
 
-TypeScript
+TypeScript & 
 Material UI
 
 
 ### Backend:
-OpenAI
+OpenAI &
 Firebase
 
 ### Packages:
-(react-camera-pro) [https://github.com/purple-technology/react-camera-pro]
+[react-camera-pro](https://github.com/purple-technology/react-camera-pro)
