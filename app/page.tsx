@@ -27,6 +27,7 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState(" ");
   const [modalOpen, setModalOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const camera = useRef<CameraType>(null);
   const [image, setImage] = useState<any>(null);
@@ -151,36 +152,45 @@ export default function Home() {
         <Button
           variant="contained"
           startIcon={<Search />}
-          onClick={() => setModalOpen(true)}
+          onClick={() => setSearchOpen(!searchOpen)}
           sx={{ marginLeft: "32px" }}
         >
           Search
         </Button>
       </Box>
 
-      <Stack
-        width="100%"
-        direction="row"
-        border="2px solid #FFF"
-        gap={4}
-        sx={{ display: open ? "block" : "none" }}
-      >
-        <TextField
-          sx={{ borderColor: "#FFFFFF" }}
-          value={itemName}
-          onChange={(e) => {
-            setItemName(e.target.value);
-          }}
-        ></TextField>
-        <Button
-          variant="outlined"
-          onClick={() => {
-            handleAddItem(itemName);
-          }}
-        >
-          Add
-        </Button>
+      <Stack sx={{ display: open ? "block" : "none" }}>
+        <div className="flex flex-row gap-4  mt-8 justify-center">
+          <TextField
+            sx={{ borderColor: "#FFFFFF" }}
+            value={itemName}
+            onChange={(e) => {
+              setItemName(e.target.value);
+            }}
+          ></TextField>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              handleAddItem(itemName);
+            }}
+          >
+            Add
+          </Button>
+        </div>
       </Stack>
+
+      <Stack sx={{ display: searchOpen ? "block" : "none" }}>
+        <div className="flex flex-row gap-4  mt-8 justify-center">
+          <TextField
+            sx={{ borderColor: "#FFFFFF" }}
+            value={itemName}
+            onChange={(e) => {
+              setItemName(e.target.value);
+            }}
+          ></TextField>
+        </div>
+      </Stack>
+
       <Box sx={{ marginY: "50px" }}>
         <BasicTable list={Inventory} onRemoveItem={handleRemoveItem} />
       </Box>

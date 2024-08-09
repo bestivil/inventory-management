@@ -1,4 +1,8 @@
 // Import the functions you need from the SDKs you need
+
+import * as dotenv from "dotenv";
+dotenv.config();
+
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
@@ -8,7 +12,7 @@ import { getStorage } from "firebase/storage";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDIYIE-U7kyt0dAsIQkN39MX3xY87KOdqY",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: "inventory-mangement-sys.firebaseapp.com",
   projectId: "inventory-mangement-sys",
   storageBucket: "inventory-mangement-sys.appspot.com",
